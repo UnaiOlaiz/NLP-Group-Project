@@ -1,0 +1,28 @@
+name: quran-nlp
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  - python=3.10
+  - pip
+  - pip:
+      - torch==2.2.0
+      - torchvision
+      - torchaudio
+      - transformers==4.42.4
+      - sentence-transformers==2.7.0
+      - faiss-cpu
+      - camel-tools
+      - nltk
+      - spacy
+      - pandas
+      - numpy
+      - scikit-learn
+      - tqdm
+      - datasets
+      - jupyterlab
+      - notebook
+      - matplotlib
+      # buscador híbrido
+      - elasticsearch
+      - opensearch-py
