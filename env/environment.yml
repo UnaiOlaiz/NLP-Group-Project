@@ -23,6 +23,8 @@ dependencies:
       - jupyterlab
       - notebook
       - matplotlib
+      - seaborn
       # buscador híbrido
       - elasticsearch
       - opensearch-py
+      
