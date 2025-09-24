@@ -14,3 +14,4 @@ dependencies:
       - sentence-transformers
       - arabic-reshaper
       - python-bidi
+      - camel_tools
