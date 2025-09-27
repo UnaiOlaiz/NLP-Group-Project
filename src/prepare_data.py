@@ -9,10 +9,10 @@ pero escritas con variantes gráficas, se traten igual.
 from camel_tools.morphology.analyzer import DEFAULT_NORMALIZE_MAP as normalizer
 
 '''
-elimina los diacríticos árabes (ḥarakāt), es decir,
+Elimina los diacríticos árabes (ḥarakāt), es decir,
 las marcas cortas de vocalización y otros símbolos fonéticos.
 
-Asi evitamos que los diacríticos interfieran en el análisis 
+Así evitamos que los diacríticos interfieran en el análisis
 (la mayoría de modelos entrenados de CAMeL Tools usan texto sin diacríticos, y si usamos otros modelos esto puede ayudar).
 '''
 from camel_tools.utils.dediac import dediac_ar
