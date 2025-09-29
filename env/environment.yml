@@ -10,6 +10,7 @@ dependencies:
   - matplotlib
   - seaborn
   - nltk
+  - fasttext # El modelo que nos dijo el profesor
   - pip:
       - sentence-transformers
       - arabic-reshaper
