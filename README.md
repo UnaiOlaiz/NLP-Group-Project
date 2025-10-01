@@ -12,7 +12,6 @@ Un proyecto de **procesamiento del lenguaje natural (NLP)** aplicado al análisi
 - [Estructura del Proyecto](#estructura-del-proyecto)
 - [Uso](#uso)
 - [Recursos](#recursos)
-- [Contribuir](#contribuir)
 
 ---
 
