@@ -1,4 +1,4 @@
-# NLP Group Project – CoranNLP
+# NLP Group Project – HudaAI
 
 Un proyecto de **procesamiento del lenguaje natural (NLP)** aplicado al análisis del Corán en árabe e inglés. El objetivo es preparar, analizar y procesar los textos religiosos para desarrollar un sistema de **búsqueda semántica** avanzado.
 
