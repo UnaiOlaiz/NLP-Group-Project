@@ -10,9 +10,14 @@ dependencies:
   - matplotlib
   - seaborn
   - nltk
-  - fasttext # El modelo que nos dijo el profesor
+  - fasttext  # El modelo que nos dijo el profesor
+  - plotly
   - pip:
       - sentence-transformers
       - arabic-reshaper
       - python-bidi
       - camel_tools
+      - scikit-learn
+      - threadpoolctl
+      - umap-learn
+      - altair
