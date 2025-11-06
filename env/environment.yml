@@ -22,3 +22,5 @@ dependencies:
       - umap-learn
       - altair
       - googletrans
+      - umap
+      - hdbscan
