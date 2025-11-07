@@ -24,3 +24,4 @@ dependencies:
       - googletrans
       - umap
       - hdbscan
+      - bertopic
