@@ -28,12 +28,14 @@ with open(arab_quran, "r", encoding="utf-8") as f:
 
 # English Quran normalization
 def normalize_english(text: str) -> str:
-    text = text.lower()
-    # elimninar lo que no son letras ni espacios (\s)
-    text = re.sub(r"[^a-z\s]", " ", text)
-    # limpiar espacios múltiples
-    text = re.sub(r"\s+", " ", text).strip()
-    return text
+    parts = text.strip().split("|", 2)
+    if len(parts) == 3:
+        cap, verse, content = parts
+        content = content.lower()
+        content = re.sub(r"[^a-z\s]", " ", content)
+        content = re.sub(r"\s+", " ", content).strip()
+        return f"{cap}|{verse}|{content}"
+    return text.strip()
 
 print(normalize_english("1|1|In the name of Allah, the Entirely Merciful, the Especially Merciful."))
 
