@@ -10,7 +10,7 @@ dependencies:
   - matplotlib
   - seaborn
   - nltk
-  - fasttext  # El modelo que nos dijo el profesor
+  - fasttext  # El modelo que nos dijo el profesor (si no funciona probar con fasttext-wheel)
   - plotly
   - pip:
       - sentence-transformers
