@@ -12,6 +12,8 @@ dependencies:
   - nltk
   - fasttext  # El modelo que nos dijo el profesor (si no funciona probar con fasttext-wheel)
   - plotly
+  - umap-learn
+  - hdbscan
   - pip:
       - sentence-transformers
       - arabic-reshaper
@@ -22,6 +24,4 @@ dependencies:
       - umap-learn
       - altair
       - googletrans
-      - umap
-      - hdbscan
       - bertopic
