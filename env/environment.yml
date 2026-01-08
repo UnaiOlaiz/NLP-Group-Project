@@ -25,3 +25,4 @@ dependencies:
       - altair
       - googletrans
       - bertopic
+      - torchinfo
