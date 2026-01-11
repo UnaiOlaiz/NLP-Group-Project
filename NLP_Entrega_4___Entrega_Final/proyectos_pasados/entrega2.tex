@@ -1,0 +1,143 @@
+\section{Introducción}
+Antes de empezar con la documentación correspondiente al trabajo hecho para esta segunda entrega, hemos de aclarar que ya habíamos comenzado con el análisis de nuestros datos en la primera entrega. Por lo tanto, para esta segunda hemos añadido contenido al notebook donde se analizan los datos y hemos empezado con tareas que se requerirán en las futuras entregas. No obstante, en este documento, nos limitaremos a explicar nuestro código relacionado al análisis de datos de nuestro proyecto \textit{HudaAI}.
+
+\section{Carga del dataset del Corán}
+Para realizar el análisis del texto sagrado, pensamos en importar el texto en el formato más amigable para el análisis. Para nuestra suerte, encontramos el texto en un formato el cual no requería de mucho retoque. Aún así, creamos un script llamado \textit{prepare\_data.py} para normalizar, limpiar y preparar los datos para el análisis. En este, hacemos uso de la librería \textit{camel\_tools} la cual ofrece herramientas para procesar texto árabe. En este archivo importamos el texto y lo modificamos para normalizarlo, pero debido a que tratamos con el Corán en inglés y en árabe, el proceso es diferente.
+
+\begin{itemize}
+    \item La normalización del Corán en árabe elimina los diacríticos llamados (ḥarakāt), para cortar las marcas de vocalización y símbolos fonéticos. De esta manera, los diacríticos no interferirán en el análisis.
+    \item En cuanto a la normalización en inglés, nos hemos limitado a eliminar mediante expresiones regulares cualquier caracter que no sean las letras del alfabeto inglés y saltos de espacio.
+\end{itemize}
+
+Por finalizar, dividimos el dataset en las columnas de 'Capítulo', 'Versículo' y 'Texto' (para ambos idiomas), quedándonos con el dataset en el siguiente formato:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/entrega2/arab_dataset.png}
+    \caption{Dataset limpio del Corán en árabe}
+\end{figure}
+
+\section{Estadísticas básicas}
+Empezamos el análisis de los datos extrayendo datos básicos como el número de versos, el número de capítulos, obteniendo los siguientes resultados:
+
+\begin{itemize}
+    \item Número de versos del Corán (tanto en árabe como en ingés): 6236 versos en total.
+    \item Número de capítulos del Corán: 114 capítulos.
+    \item Número total de palabras: 82627 palabras.
+    \item Número promedio de palabras por verso: 13 palabras.
+    \item Distribución de longitud de los versos en árabe:
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=1\linewidth]{img/entrega2/distribución de longitud de los versos.png}
+        \caption{Gráfico de la distribución de longitud de los versos}
+    \end{figure}
+    \item Longitud de versos del Corán:
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=1\linewidth]{img/entrega2/boxplot longitud de versos.png}
+        \caption{Boxplot de longitud de versos}
+    \end{figure}
+\end{itemize}
+
+Luego probamos con la librería camel\_tools que nos proporciona herramientas de tokenización, análisis y eliminación de ambigüedades en palabras. En esta parte empezamos eliminando las stop words en árabe mediante la librería nltk y tokenizando gracias al tokenizer simple\_word\_tokenize.
+
+A continuación, usamos el BERTUnfactoredDisambiguator para desambiguar las palabras, extrayendo el lema y una glosa aproximada en inglés.
+
+Hasta aquí, obtenemos:
+\begin{itemize}
+    \item No stop words.
+    \item Tokens normalizados y lematizados.
+    \item Tokens desambiguados.
+    \item Un significado aproximado del token en inglés.
+\end{itemize}
+
+Posteriormente realizamos POS Tagging para analizar la distribución gramatical del vocabulario.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\linewidth]{img/entrega2/output.png}
+    \caption{POS Tagging del Corán}
+\end{figure}
+
+También analizamos la frecuencia de tokens usando la clase Counter.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\linewidth]{img/entrega2/output conteo frecuencia.png}
+    \caption{Top 10 palabras más frecuentes Corán (árabe)}
+\end{figure}
+
+Tradujimos estas palabras usando las glosas en inglés:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{img/entrega2/output conteo frecuencia traducc.png}
+    \caption{Top 10 palabras más frecuentes Corán (árabe - traducción inglés)}
+\end{figure}
+
+Tras limpiar traducciones incorrectas y stop words:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{img/entrega2/output conteo frecuencia traducc correcta.png}
+    \caption{Top 10 palabras más frecuentes Corán (árabe - traducción inglés)}
+\end{figure}
+
+También analizamos la frecuencia en inglés:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{img/entrega2/output conteo frecuencia ingles.png}
+    \caption{Top 10 palabras más frecuentes Corán (inglés)}
+\end{figure}
+
+\section{Métodos de representación - TF-IDF}
+Para calcular TF-IDF usamos TfidfVectorizer de scikit-learn y analizamos los términos más relevantes.
+
+\subsection{TOP-10}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{img/entrega2/tfidf-arabe.png}
+    \caption{Top 10 palabras TF-IDF (Corán en Árabe)}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{img/entrega2/tfidf-ingles.png}
+    \caption{Top 10 palabras TF-IDF (Corán en Inglés)}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{img/entrega2/tfidf-arabe-traducido.png}
+    \caption{Top 10 palabras TF-IDF (Corán en Árabe)}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{img/entrega2/tfidf-por-documento-ingles.png}
+    \caption{Top 10 palabras TF-IDF por documentos (Corán en Inglés)}
+\end{figure}
+
+\section{Representación mediante Word Embeddings}
+Explicamos la creación de embeddings contextuales y no contextuales.
+
+\subsection{Embeddings contextuales - SentenceTransformers y BERT}
+Se emplearon embeddings basados en SentenceTransformers y BERT para tareas comparativas.
+
+\subsection{Embeddings no-contextuales - FastText}
+Los embeddings FastText se usaron para la futura tarea de búsqueda semántica.
+
+\begin{center}
+\begin{minipage}{0.9\linewidth}
+\begin{lstlisting}[language=Python]
+df_ft["arab_embeddings"] = df_ft["text"].apply(
+    lambda x: ft.get_sentence_vector(x)
+)
+\end{lstlisting}
+\end{minipage}
+\end{center}
+
+\section{Reutilización de funcionalidades a cara de futuras entregas}
+De cara a las siguientes entregas, hemos estructurado el proyecto para facilitar mejoras futuras. El código se encuentra organizado en distintos Jupyter Notebooks dentro de nuestro repositorio de \href{https://github.com/UnaiOlaiz/NLP-Group-Project.git}{\textbf{Github}}.

@@ -1,0 +1,232 @@
+\section{Búsqueda Semántica}
+
+La búsqueda semántica fue nuestra primera idea a abordar en este proyecto para la asignatura. Para documentar esta subtarea, empleamos el mismo concepto arbitrario del \textit{Jupyter Notebook} correspondiente: \textarabic{الجنة} (paraíso), el cual usaremos para conseguir los pasajes más similares (siendo estos los que hablen de divinidad, cielo, ... etc) y los más disimilares (devolviendo los versículos que reciten la maldad o el infierno). Cabe recalcar que como todo el proceso anterior y futuro, vamos a trabajar con el Corán tanto en árabe como en inglés para realizar un análisis más entendible y comparable.
+
+El primer paso para realizar el buscador sería pasar a embeddings los versículos del Libro Sagrado. Hemos empleado 2 modelos diferentes, uno siendo \textit{Sentence-Transformer} (de tipo contextual) y el otro siendo un modelo de \textit{Fasttext} (de tipo no-contextual). Siendo el siguiente paso comparar, en nuestro caso, la métrica de similitud del coseno del embedding de nuestro concepto original con todos los demás. Obteniendo así un valor entre [-1, 1] indicando los extremos una disimilitud/similitud total y el 0 una relación inexistente. A continuación, documentaremos la creación y comparación entre los dos modelos empleados para esta tarea:
+
+\subsection{Sentence-Transformer}
+Para construir primero el modelo de embeddings que considera el contexto de las palabras que forman las frases, vamos a usar el modelo llamado \textit{distiluse-base-multilingual-cased-v2}. Modelo que ha sido demostrado que rinde eficientemente en varios idiomas y que vamos a utilizar para crear los embeddings contextuales árabes e ingleses. Obteniendo los siguientes resultados para los 10 embeddings contextuales más similares dado el concepto de "paraíso". El formato del dataframe siendo: línea del donde se encuentra el capítulo, número del capítulo, número del versículo, texto y el valor de similitud de coseno. (El orden del formato puede cambiar respecto al idioma).
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{img/entrega3/starabe.png}
+    \caption{Los 10 capítulos árabes más similares obtenidos mediante el \textit{SentenceTransformer}}
+    \label{fig:placeholder3}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{img/entrega3/stingles.png}
+    \caption{Los 10 capítulos ingleses más similares obtenidos mediante el \textit{SentenceTransformer}}
+    \label{fig:placeholder4}
+\end{figure}
+
+Como podemos apreciar, no hay ningún capítulo que se repita en ambos resultados, siendo esto debido a que el contenido semántico de los capítulos varía considerablemente entre idiomas. No obstante, podemos apreciar que el rango de valores de similitud de coseno de los 10 embeddings más similares se mantiene parecido entre idiomas, en un rango próximo a [0.35-0.47], no siendo especialmente relevante. Por otra parte, podemos apreciar que los capítulos con mayor valor de similitud devuelven pasajes donde se tratan o incluso se citan conceptos relacionados con el paraíso.
+
+\subsection{Fasttext}
+A la hora de crear los embeddings no-contextuales, nos hemos decantado por \textit{fastText} por recomendación propia de nuestro profesorado, que al final, ha resultado ser mejor opción que el modelo explicado anteriormente. También aplicando la similitud de coseno como métrica de evaluación, hemos seguido el mismo protocolo para la creación del modelo, exceptuando diferentes hiperparámetros propios de \textit{fastText}. Mientras que para el \textit{SentenceTransformer} no hemos tenido que añadir ningún hiperparámetro, para los embeddings no-contextuales hemos probado diferentes combinaciones, quedándonos finalmente con la siguiente configuración:
+
+\begin{itemize}
+    \item \textbf{model="skipgram"}: es uno de los dos modelos que ofrece \textit{fastText}, especialmente diseñado para predecir el contexto de la palabra deseada.
+    \item \textbf{dim=300}: referenciando el tamaño que tendrá cada uno de los embeddings (1x300).
+    \item \textbf{epoch=10}: hemos decidido entrenarlo por 10 epochs en total.
+    \item \textbf{minn=3}: hace referencia al número de sub-palabras mínimas, en este caso N-gramas de 3 caracteres.
+    \item \textbf{maxn=6}: N-gramas de 6 caracteres serán aceptados como máximo. Haciendo como total el rango de entre 3 y 6 caracteres los N-gramas que se van a aceptar.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{img/entrega3/ftarabe.png}
+    \caption{Los 10 capítulos árabes más similares obtenidos mediante el \textit{fastText}}
+    \label{fig:placeholder5}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{img/entrega3/ftingles.png}
+    \caption{Los 10 capítulos ingléses más similares obtenidos mediante el \textit{fastText}}
+    \label{fig:placeholder6}
+\end{figure}
+
+Como en el anterior caso, podemos ver que los capítulos no coinciden al cambiar de idioma, seguramente por la razón previamente mencionada. Aún así, podemos ver una clara eficacia y un mayor valor de similitud de coseno.
+
+\subsection{Resultados de comparación}
+Después de haber obtenido los resultados de los embeddings más similares habiendo introducido el concepto arbitrario de "paraíso", nos hemos decantado por los embeddings no-contextuales. Por una parte, por un mayor valor de similitud, obteniendo mayoritariamente un valor el doble de alto que con los embeddings contextuales, no bajando de 0.8 en el top 10. Por otra parte, hemos podido apreciar que el \textit{SentenceTransformer} ha devuelto como pasajes más fieles aquellos donde la misma palabra de "paraíso" o "cielo" (sinónimo principal) se mencionan. Mientras que los embeddings no-contextuales han ido más allá, devolviendo versículos donde el concepto de "paraíso" se transforma mediante metáforas y recursos literarios. Donde podríamos citar versículos como el número 50 del capítulo 38 donde se referencia al paraíso como un jardín de residencia perpetua.
+
+\begin{quote}
+\textit{"...gardens of perpetual residence whose doors will be opened to them..."} (Capítulo 38, versículo 50, línea número 4019 en nuestro archivo .txt)
+\end{quote}
+
+Es interesante mencionar que, intuitivamente, podriamos pensar que SentenceTransformer deberia funcionar mejor en estos casos donde las metaforas y los dobles significados son tan frecuentes. Sin embargo, encontramos justo lo contrario. Por eso, la explicación rápida y simple a esto es que, además de que el Corán tiene estructuras muy repetitivas, los vectores creados por FastText alrededor de la palabra "paradise" están bastante cerca de otros términos como:
+\begin{itemize}
+    \item "garden"
+    \item "eternal"
+    \item "righteous"
+    \item "mercy"
+    \item "reward"
+    \item "heaven"
+\end{itemize}
+
+Por eso, que FastText esté funcionando “mejor” en nuestro caso no contradice la teoría que los fundamenta, simplemente refleja cómo son nuestros datos (el Corán) y cómo funcionan ambos modelos en la práctica real. FastText, al basarse en medias de palabras, capta perfectamente esta repetición de vocabulario mientras que SentenceTransformer no tiene automáticamente embeddings cercanos a la palabra “paradise”, porque el modelo no sabe teológicamente que están relacionados.
+
+\subsection{Visualización de los resultados}
+En este sub-apartado vamos a buscar representar gráficamente nuestro espacio multidimensional de embeddings donde se visualizarán los embeddings relacionados con el concepto arbitrario anterior que todavía mantendremos. No obstante, realizaremos una serie de cambios para ir más allá: ahora, además de los pasajes representados más similares representados mediante embeddings, representaremos también los embeddings más disimilares. Siendo estos los que tienen el valor de similitud de coseno más negativo, intentando buscar términos opuestos a la de "paraíso", donde tendríamos que encontrar pasajes relacionados a algún cierto de cástigo o menciones al infierno. Para este caso, visualizaremos los 5 embeddings más similares y 5 más disimilares.
+
+\subsubsection{Visualización en 3 dimensiones}
+Partiendo de que el tamaño original de nuestros embeddings es de 300 dimensiones, vamos a realizar una reducción de dimensionalidad mediante el uso de \textit{PCA}, quedándonos finalmente con 3. Mediante el uso de la librería \textit{Plotly}, hemos creado una representación de nuestros embeddings deseados en 3 dimensiones que luce tal que así:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{img/entrega3/plotly3d.png}
+    \caption{Representación de nuestros embeddings en un espacio tridimensional usando \textit{PCA}}
+    \label{fig:placeholder7}
+\end{figure}
+
+Aunque no se cuenta con la interactividad que ofrece \textit{plotly} en el documento, en el \textit{Jupyter Notebook} correspondiente se cuenta con la opción de arrastrar y configurar el espacio. No obstante, podemos ver una clara agrupación de los embeddings más fieles al concepto arbitrario en azul, pareciendo que estén uno encima del otro, mientras que los más disimilares están más alejados y dispersos tanto de los embeddings más representativos como de ellos mismos (los puntos rojos). Debemos objetar que la interactividad en el código ofrece un \textit{tooltip} que se despliega encima del embedding representado mediante el punto ofreciendo sus coordenadas y su contenido textual.
+
+\subsubsection{Visualización en 2 dimensiones}
+También consideramos visualizar los 5 embeddings más similares y disimilares en un espacio bidimensional. A diferencia del anterior plot, usamos el reductor de dimensionalidad \textit{UMAP} por recomendación de nuestro profesorado ya que suele funcionar mejor que el \textit{Principal Component Analysis} para los embeddings de alta dimensionalidad. Como comentario adicional, vamos a seguir usando este segundo método para el resto del proyecto.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/entrega3/plot2d.png}
+    \caption{Representación de nuestros embeddings en un espacio bidimensional usando \textit{UMAP}}
+    \label{fig:placeholder8}
+\end{figure}
+
+Usando el mismo concepto arbitrario, podemos ver una clara agrupación de los embeddings similares, y en el caso de esta visualización en 2D, también de los embeddings más disimilares. A diferencia que en el gráfico anterior, donde sólo los similares estaban agrupados y los menos representativos se encontraban más dispersos entre sí. Esto se debe a la priorización de cada reductor de dimensionalidad; ya que \textit{UMAP} prioriza una estructura más local, mientras que el \textit{PCA} una más global. No obstante, se sigue manteniendo una distancia considerable entre ambos grupos en ambas visualizaciones.
+
+\section{Clustering de los capítulos del Corán}
+Con este segundo experimento hemos buscado agrupar los 114 capítulos del Corán en diferentes grupos donde el tema que los reúna sea similar entre éstos, y difiera de los otros capítulos agrupados. Para realizar esta segunda tarea a cabo, reusaremos lo construido anteriormente, siendo esto los embeddings no-contextuales obtenidos mediante el módulo \textit{fastText}, y el reductor de dimensionalidad \textit{UMAP}. Como algoritmo agrupador, nos hemos decantado por \textit{HDBSCAN}. Para realizar a cabo la tarea, empezamos por cargar los modelos de embeddings y agrupando estos por capítulo. Resultando en un \textit{dataframe} conteniendo todos los embeddings de cada capítulo juntos en una misma fila, siendo el identificador el número entero del capítulo. Obteniendo como esperábamos la dimensionalidad deseada, 114 filas y 2 columnas.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{img/entrega3/dfagrupado.png}
+    \caption{Resultado del \textit{dataframe} con el que trabajaremos (ejemplo árabe)}
+    \label{fig:placeholder9}
+\end{figure}
+
+Después, procederíamos a "stackear" los embeddings y normalizarlos, y reduciendo la dimensionalidad con \textit{UMAP} con la similitud de coseno como métrica de similitud. Por la parte de agrupación, hemos escogido que el tamaño mínimo de cada cluster sea de 3 capítulos y usaremos la distancia euclidiana para reflejar la distancia entre clusters. Una vez obtenidos los dos componentes, realizaremos las predicciones que asignen a cada capítulo el número de cluster al que considere correspondiente. Obteniendo para el ejemplo árabe 15 en total y 11 en inglés, no obstante, se asignarán al cluster con identificador "-1" todos aquellos capítulos que no han conseguido ser agrupados para nuestro caso. Obteniendo los siguientes resultados:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/entrega3/clusterarabe.png}
+    \caption{Clusterización árabe con \textit{UMAP} y \textit{HDBSCAN}: total de 15 clusters.}
+    \label{fig:clusterarabe}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{img/entrega3/clusteringles.png}
+    \caption{Clusterización inglés con \textit{UMAP} y \textit{HDBSCAN}: total de 11 clusters.}
+    \label{fig:clusteringles}
+\end{figure}
+
+Aunque en el \textit{Noteboook} correspondiente hayamos realizado un análisis más profundo es esencial recalcar si han habido capítulos que no hayan cambiado de cluster respecto al cambio de idioma. Ya que como podemos apreciar en los 2 plots anteriores, la distribución es totalmente diferente aunque hayamos conseguido un número total de cluster similar.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{img/entrega3/cambioscluster.png}
+    \caption{Comparación lado a lado de los capítulos que han cambiado de agrupación respecto al idioma (Verde: ha cambiado; Rojo: no ha cambiado).}
+    \label{fig:placeholder10}
+\end{figure}
+
+Como puede observarse, únicamente 10 de los 114 capítulos no han cambiado de clúster al realizar la agrupación en distintos idiomas. Se trata de los capítulos \textbf{33, 65, 98, 113, 14, 78, 32, 23 y 36}. Esto sugiere que los embeddings de los capítulos que no han variado de cluster son probablemente muy parecidos tanto en inglés como en árabe debido a una gran coherencia semántica entre ambos idiomas. Es decir, su contenido es tan característico que mantiene la misma posición en el espacio vectorial independientemente de la lengua. Tomemos por ejemplo el capítulo 113:
+
+\begin{quote}
+\centering
+\textbf{113|1} \textit{Say, I seek refuge in the Lord of daybreak.}\\
+\textbf{113|2} \textit{From the evil of what He has created.}\\
+\textbf{113|3} \textit{And from the evil of the darkness when it settles.}\\
+\textbf{113|4} \textit{And from the evil of those who blow on knots.}\\
+\textbf{113|5} \textit{And from the evil of an envier when he envies.}
+\end{quote}
+
+Donde se trata un tema muy concreto: la protección contra la maldad y la envidia. Capítulo que contiene términos como "Lord of daybreak" que son muy distintivos. Además, los capítulos que han cambiado de cluster respecto al idioma comparten un espacio de embeddings distinto, es decir, los embeddings árabes e ingleses no están alineados entre sí. Resultando de esta manera en un cambio de distribución semántica, alterando como hemos podido ver en la visualización comparativa de los espacios de clusters (Fig.~\ref{fig:clusterarabe} y Fig.~\ref{fig:clusteringles}), una diferencia de posiciones clara y evidente.
+
+\section{Generador de Topics}
+En esta sección, teníamos como objetivo crear unos "topics" o "títulos" representativos de los diferentes capítulos del Corán. Como los versículos de cada capitulo son bastante cortos y muy limitados en contenido, decidimos seguir con BERTopic. Aprovecharemos el modelo de embeddings fasttext y el modelo UMAP. También aprovechamos el agrupamiento que hicimos previamente en \textit{HDBSCAN} para aumentar el tamaño de los documentos que se analizarán en BERTopic y así poder crear un título representativo por cluster.
+
+BERTopic es muy interesante para esta tarea, ya que nos ofrece una estructura y metodología organizada y directa para poder abordar esta propuesta. Aquí abajo dejo una imagen que ilustra los pasos que hemos tomado para realizar correctamente BERTopic.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.1\linewidth]{img/entrega3/mind_map_bertopic.png}
+    \caption{Este esquema detalla específicamente los pasos tomados en BERTopic}
+    \label{fig:placeholder11}
+\end{figure}
+
+\subsection{Primeras representaciones}
+Para empezar, agrupamos los versículos en capítulos y los stackeamos en una matriz de tamaño (114 capítulos, 300 dimensiones). Seguido, creamos una lista de palabras demasiado frecuentes en los textos sagrados para no sesgar los resultados.
+
+\begin{itemize}
+    \item '\textarabic{الله}', Allah
+    \item '\textarabic{محمد}', Muhammad
+    \item '\textarabic{رب}', Lord
+    \item '\textarabic{الله}', God (igual que Allah)
+    \item '\textarabic{قرآن}', Quran
+    \item '\textarabic{اسلام}', Islam (sin hamza para evitar duplicados)
+    \item '\textarabic{الاسلام}', Islam (con artículo)
+    \item '\textarabic{ربكم}', your Lord
+    \item '\textarabic{ربه}', his Lord
+    \item '\textarabic{ربهم}', their Lord
+    \item '\textarabic{يارب}', oh Lord
+\end{itemize}
+
+Después, hacemos un CountVectorizer para obtener la importancia de las palabras y un ClassTfidfVectorizer para eliminar las stopwords y reducir las palabras más frecuentes. Aquí usamos bm-25. Finalmente, juntamos todo esto con UMAP, HDBSCAN y fasttext como modelo y hacemos unos plots para ver que palabras hemos obtenido por cada topic.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{img/entrega3/imgen topics bertopic.png}
+    \caption{Visualización de palabras más representativas por topic}
+    \label{fig:placeholder1}
+\end{figure}
+
+\subsection{Rerankers}
+Para mejorar la representación de los topic con palabras más variadas y fieles al topic hemos aplicado un par de rerankers. Entre los rerankers que usamos contamos con KeyBERTInspired y con MaximalMarginalRelevance.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{img/entrega3/imgen topics bertopic 2.png}
+    \caption{Visualización de palabras más representativas por topic con rerankers}
+    \label{fig:placeholder2}
+\end{figure}
+
+\subsection{Generador de títulos}
+Para la generación de títulos usamos el modelo \textit{flan-t5-base} de google. Para hacerlo funcionar correctamente, hemos hecho un prompt few-shot.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.4\linewidth]{img/entrega3/ejemplos topics flan.png}
+    \caption{Topics creados por \textit{flan-t5-base}}
+    \label{fig:placeholder}
+\end{figure}
+
+Por eso hemos decidido usar un modelo en local de ollama, más específicamente \textit{gemma3:4b}. Los resultados fueron los siguientes para los topics en ingles:
+
+\begin{itemize}
+    \item 1. Qur’an Worship of the Deity
+    \item 2. Qur’an Verses of Praise and Belief
+    \item 3. Disbelievers’ Disbelief and Believers’ Faith
+    \item 4. Qur’an Torment, Judgement, and Divine Peace
+    \item 5. Qur’an Darkness, Night, and Dawn’s Arrival
+    \item 6. Verses of Praise for the Praiseworthy
+    \item 7. Prophet, Hypocrites, and Marriages in Faith
+    \item 8. Moses’ Worship and Suffering Interpretation
+    \item 9. Praiseworthy Scriptures of Divine Creation
+    \item 10. Angels, Worshippers, and Moses’ Worship
+    \item 11. Disbeliever, Sinner, and Purification to Paradise
+    \item 12. Believers, Prophets, and Christian Scriptures
+    \item 13. Qur’an Prayer, Pharaoh, and Satan’s Ways
+    \item 14. Resurrection, Qur’an, and Soul’s Reality
+    \item 15. Moses, Pharaoh, and Believers’ Worship
+\end{itemize}
+
+Como tarea final, hemos querido comparar la similitud de estos títulos generados tanto para los topics en árabe como para los ingleses mediante fasttext. Lo que obtenemos como respuesta es algo no muy concluyente, solo que algunos títulos son tan generales que acaparan la mayoría de topics y por eso se relacionan con muchos de ellos, como podremos ver aquí:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{img/entrega3/similitud topics.png}
+    \caption{Cosine similarity de los títulos generados por topic}
+    \label{fig:placeholder0}
+\end{figure}

@@ -1,0 +1,57 @@
+\section{Abstract}
+A diferencia de la búsqueda léxica, que se limita a recuperar pasajes únicamente cuando contienen una coincidencia exacta de palabras, la búsqueda semántica es un tipo de retrieval que busca captar el significado contextual de los términos. De este modo, una consulta como “paraíso” también podría devolver referencias a “jardines” o “moradas eternas”. Este reto se intensifica en el caso del Corán y del árabe clásico: el texto sagrado está profundamente marcado por metáforas, alusiones y un lenguaje altamente polisémico, mientras que el árabe presenta una compleja morfología y variaciones léxicas que hacen especialmente difícil la desambiguación y la correspondencia de significados. Por ello, mediante este trabajo pretendemos desarrollar un buscador semántico que, a partir de modelos de representación lingüística entrenados en árabe clásico y apoyados en recursos en inglés, sea capaz de identificar equivalencias contextuales más allá de las coincidencias de palabras o sinónimos. El objetivo es capturar la riqueza interpretativa del Corán y superar las limitaciones de la búsqueda léxica tradicional, ofreciendo resultados más coherentes con el trasfondo religioso, histórico y lingüístico del texto.
+
+\section{Motivación}
+
+Nuestro objetivo con este proyecto es emplear diferentes técnicas del procesamiento del lenguaje natural en conjunto alrededor de una idea que consideramos original.
+
+Siempre desde el más profundo respeto, ya que vamos a tratar con un documento religioso como es el Corán, deseamos analizar ciertos aspectos y embarcarnos en los desafíos que conlleva el análisis de este documento.
+
+\subsection{Objetivos y herramientas}
+
+He aquí las tareas y herramientas que tenemos pensadas emplear:
+
+\begin{itemize}
+\item Contamos con la suerte de haberlo encontrado en un formato correcto y además en varios idiomas. Por lo que hemos decidido que vamos a trabajar con el texto en árabe e inglés, para poder realizar un más profundo estudio y comparación. 
+
+\item Al ser el árabe un idioma tan extendido y estudiado, ofrece varias librerías y herramientas que facilitarán ciertos aspectos de nuestro proyecto en gran parte. Entre ellas ya hemos usado e indagado profundamente en CAMeL Tools \cite{obeid2020camel}.
+
+\item Por otra parte, consideramos que la “tokenización” en arábe resultará en un experimento interesante ya que la caracterización árabe deriva en reglas diferentes.
+
+\item Otra de las tareas que pensamos realizar es desarrollar un buscador basado en retrieval semantico para devolver el pasaje del Corán más similar o más fiel a un concepto o idea introducida. Algunos de estos conceptos abstractos podrían ser: “adoración”, “paraíso”, “prohibiciones”, “Yihad”, …
+
+\end{itemize}
+
+\section{Originalidad y búsqueda semántica (semantic retrieval)}
+Nuestro proyecto incorpora un aspecto poco explorado en PLN aplicado al Corán: la búsqueda semántica. Según la revisión en \textbf{Arabic natural language processing for Qur’anic research: a systematic review} \cite{bashir2023arabic}, la mayoría de los trabajos sobre el Corán se centran en herramientas de concordancia, análisis léxico y búsquedas exactas, y destacan la falta de recursos anotados para árabe clásico. Apenas se mencionan aplicaciones de retrieval semántico en textos religiosos, lo que refuerza la originalidad de nuestra propuesta de ajustar modelos multilingües para desarrollar un buscador conceptual del Corán.
+
+\subsection{Métodos de evaluación para la búsqueda semántica}
+Para evaluar los resultados obtenidos con nuestra implementación de un buscador semántico, hemos barajado varias opciones después de haber investigado varias publicaciones al respecto. Los siguientes serían los que meditamos emplear, o al menos, tener en cuenta:
+
+\begin{itemize}
+    \item On-topic rate: Métrica que evalúa la importancia de la búsqueda dada una query. Un alto valor en esta métrica significa que está funcionando bien, mientras que un valor bajo muestra que se necesita una mejora. \cite{zheng2024semantic}
+    
+    \item Normalized Discounted Cumulative Gain (nDCG): Mide la eficacia de la clasificación en todos los resultados de búsqueda, teniendo en cuenta la relevancia ponderada de cada documento. Un valor alto indica una clasificación de relevancia adecuada para los documentos. \cite{mahboub2024evaluation}
+
+    \item Cosine Similarity: este método básico de la estadística va a ser empleado para comparar la similitud entre los embeddings de diferentes palabras. Un valor cercano a 1 mostraría que las palabras son similares y -1 que son antónimas por así decirlo.
+\end{itemize}
+
+\section{Estado del arte / Related Work}
+Estos últimos años han visto surgir diferentes iniciativas relacionando el tratamiento del Corán con técnicas del procesamiento de lenguaje natural. En este breve apartado, vamos a anotar los más importantes e influyentes proyectos que pueden estar relacionados y servir de inspiración para nuestra tarea en esta asignatura.
+
+\subsection{Proyectos y materiales destacados}
+\begin{itemize}
+    \item \textbf{A A New Semantic Search Approach For The Holy Quran Based
+    On Discourse Analysis And Advanced Word Representation
+Models} \cite{lagrini2024new}. Ha sido seguramente el paper que más nos ha inspirado para recolectar ideas para el proyecto. Publicado por Samira Lagrini y Amina Debbah en el año 2024, profundiza en la investigación de la búsqueda semántica en árabe, también con el Sagrado Corán. Haciendo fuerte hincapié en la dificultad que el Corán tiene debido a las alusiones y referencias religiosas a veces incluso incomprensibles para los humanos. Además, en la investigación se usan varios de los conceptos con los que vamos a tratar, entre otros: el modelo “FastText”, la métrica de similitud “Cosine Similarity” entre otros.
+
+    \item \textbf{Al-Bayan: An Arabic Question Answering System for the Holy Quran:} \cite{abdelnasser2014al} presenta un sistema de preguntas y respuestas en árabe enfocado en el Corán. Su objetivo es permitir consultas semánticas precisas, superando la dificultad de interpretar referencias religiosas complejas. El sistema combina técnicas de procesamiento de lenguaje natural y modelos de representación de palabras para mejorar la recuperación de información relevante del texto coránico.
+
+    \item \textbf{Embedding search for quranic texts based on large language models: } \cite{alqarni2024embedding} Este estudio publicado por Mohammed Alqarni desde la Universidad de Jeddah, Arabia Saudita, también profundiza en la búsqueda semántica empleando textos Coránicos. Lo que lo diferencia y relaciona con nuestro proyecto es que emplea embeddings comunes y embeddings derivados de LLMs para comparar los resultados. 
+
+    \item \textbf{Quranic Conversations: Developing a Semantic Search tool for the Quran using Arabic NLP Techniques:} \cite{shohoud2023quranic} Este paper publicado en el año 2023 también explica la implementación de una búsqueda semántica con modelos pre-entrenados y métodos de evaluación como la similitud de coseno. Por otra parte, emplean 30 \textit{tafsirs} (comentarios sobre los significados de los versículos, contexto histórico y sabiduría). Convirtiendo estos en tensores, emplean la búsqueda semántica para luego buscar el siguiente \textit{tafsir} más similar para devolver el \textit{ayah} (pasaje) correspondiente.
+
+    \item \textbf{Detecting semantic-based similarity between verses of the quran with doc2vec:} \cite{alshammeri2021detecting} se emplea la similaridad de coseno para medir la similitud de versos del Corán representados mediante el modelo \textit{Doc2Vec}. Este modelo es una extensión del modelo \textit{Word2Vec}, representa documentos completos en un espacio vectorial. Paper publicado por los autores Alshammeri, Menwa and Atwell, Eric and ammar Alsalka, Mhd en el año 2021.
+    
+
+\end{itemize}
