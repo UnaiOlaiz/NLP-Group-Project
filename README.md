@@ -65,16 +65,27 @@ conda activate coran_nlp
 
 ```
 CoranNLP/
-├── data/
-│   ├── raw_data/          # Textos originales del Corán
-│   └── cleaned_data/      # Textos procesados (generados)
-├── src/
-│   ├── prepare_data.py    # Script de limpieza y preparación
-│   └── E1 - Análisis de los Datos.ipynb  # Notebook de análisis
-│   └── CoranNLP.ipynb # Notebook embeddings
-├── env/
-│   └── environment.yml    # Definición del entorno conda
-└── README.md
+├── data
+│   ├── cleaned_data
+│   ├── cuestionario_columnas_limpias_desde_csv.xlsx
+│   ├── grafical_results
+│   ├── hadith_dataset
+│   └── raw_data
+├── E3-Primera Iteración.pdf
+├── env
+│   └── environment.yml
+├── README.md
+└── src
+    ├── Análisis de los Datos.ipynb
+    ├── Análisis Respuestas Humanas.ipynb
+    ├── Búsqueda Semántica.ipynb
+    ├── evaluated_set
+    ├── evaluation_set
+    ├── Generacion de Aleyas.ipynb
+    ├── Generación RNNs y LSTMs.ipynb
+    ├── Generador de Topics + Clustering.ipynb
+    ├── modelos
+    ├── prepare_data.py
 ```
 
 ---
