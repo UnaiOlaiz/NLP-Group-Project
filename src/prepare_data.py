@@ -1,5 +1,5 @@
-arab_quran = "../data/raw_data/arab_quran.txt"
-eng_quran = "../data/raw_data/english_quran.txt"
+arab_quran = "data/raw_data/arab_quran.txt"
+eng_quran = "data/raw_data/english_quran.txt"
 
 import re
 '''
@@ -23,7 +23,7 @@ print(normalizer.map_string("بِسْمِ اللَّهِ الرَّحْمَنِ 
 with open(arab_quran, "r", encoding="utf-8") as f:
     arabic_lines = f.readlines()
     arabic_lines = [dediac_ar(normalizer.map_string(line)) for line in arabic_lines]
-    with open("../data/cleaned_data/cleaned_arab_quran.txt", "w", encoding="utf-8") as out_f:
+    with open("data/cleaned_data/cleaned_arab_quran.txt", "w", encoding="utf-8") as out_f:
         out_f.writelines("".join(arabic_lines))
 
 # English Quran normalization
@@ -42,5 +42,5 @@ print(normalize_english("1|1|In the name of Allah, the Entirely Merciful, the Es
 with open(eng_quran, "r", encoding="utf-8") as f:
     english_lines = f.readlines()
     english_lines = [normalize_english(line) for line in english_lines]
-    with open("../data/cleaned_data/cleaned_english_quran.txt", "w", encoding="utf-8") as out_f:
+    with open("data/cleaned_data/cleaned_english_quran.txt", "w", encoding="utf-8") as out_f:
         out_f.writelines("\n".join(english_lines))
